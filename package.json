@@ -1,0 +1,22 @@
+{
+  "name": "firebase-import",
+  "description": "npm config for Firebase Import",
+  "version": "1.0.0",
+  "dependencies": {
+    "optimist": "~0.5.2",
+    "firebase": "~0.5.4",
+    "progress": "~0.1.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/firebase/firebase-import.git"
+  },
+  "keywords": [
+    "firebase",
+    "import"
+  ],
+  "author": "Firebase",
+  "license": "BSD",
+  "bin": { "firebase-import": "./bin/firebase-import.js" }
+}
