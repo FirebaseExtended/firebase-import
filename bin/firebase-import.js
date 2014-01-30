@@ -23,6 +23,10 @@ var argv = require('optimist')
   .describe('json', 'The JSON file to import.')
   .alias('j', 'json')
   
+  .boolean('merge')
+  .describe('merge', 'Write the top-level children without overwriting the whole parent.')
+  .alias('m', 'merge')
+
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
@@ -47,7 +51,12 @@ function promptToContinue(ref, next) {
   if (argv.force) {
     next();
   } else {
-    console.log('All data at ' + ref.toString() + ' will be overwritten.\nPress <enter> to proceed, Ctrl-C to abort.');
+    if (argv.merge) {
+      console.log('Each top-level child in ' + argv.json + ' will be written under ' + ref.toString() + '.  If a child already exists, it will be overwritten.');
+    } else {
+      console.log('All data at ' + ref.toString() + ' will be overwritten.');
+    }
+    console.log('Press <enter> to proceed, Ctrl-C to abort.');
     process.stdin.resume();
     process.stdin.once('data', next);
   }
@@ -58,22 +67,36 @@ function start(ref) {
   console.log('Reading ' + file + '... (may take a minute)');
   var json = require(file);
 
+  var clearFirst = true, splitTopLevel = false;
+  if (argv.merge) {
+    clearFirst = false;
+    // Need to split into chunks at the top level to ensure we don't overwrite the parent.
+    splitTopLevel = true;
+  }
+  
   console.log('Preparing JSON for import... (may take a minute)');
-  var chunks = createChunks(ref, json);
-  ref.set(null, function(error) {
-    if (error) throw(error);
+  var chunks = createChunks(ref, json, splitTopLevel);
 
-    var uploader = new ChunkUploader(chunks);
-    uploader.go(function() {
-      console.log('\nImport completed.');
-      process.exit();
+  if (clearFirst) {
+    ref.remove(function(error) {
+      if (error) throw(error);
+      uploadChunks(chunks);
     });
+  } else {
+    uploadChunks(chunks);
+  }
+}
+
+function uploadChunks(chunks) {
+  var uploader = new ChunkUploader(chunks);
+  uploader.go(function() {
+    console.log('\nImport completed.');
+    process.exit();
   });
 }
 
-
-function createChunks(ref, json) {
-  var chunkRes = chunkInternal(ref, json);
+function createChunks(ref, json, forceSplit) {
+  var chunkRes = chunkInternal(ref, json, forceSplit);
   if (!chunkRes.chunks) {
     return [{ref: ref, json: json}];
   } else {
@@ -81,7 +104,7 @@ function createChunks(ref, json) {
   }
 }
 
-function chunkInternal(ref, json) {
+function chunkInternal(ref, json, forceSplit) {
   var size = 0;
   var priority = null;
   var jsonIsObject = json !== null && typeof json === 'object';
@@ -133,7 +156,7 @@ function chunkInternal(ref, json) {
       chunks.push({ref: ref, priority: priority});
     }
 
-    if (splitUp || size >= CHUNK_SIZE) {
+    if (forceSplit || splitUp || size >= CHUNK_SIZE) {
       return { chunks: chunks, size: size };
     } else {
       return { chunks: null, size: size }
