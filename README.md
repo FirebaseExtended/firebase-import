@@ -38,7 +38,8 @@ or install it locally and add it to your path:
 Or an example of merging the contents of test.json with what's already in Firebase:
 
     $ firebase-import --firebase_url https://test.firebaseio-demo.com --json test.json --merge
-    Each top-level child in test.json will be written under https://test.firebaseio-demo.com.  If a child already exists, it will be overwritten.
+    Each top-level child in test.json will be written under https://test.firebaseio-demo.com.  
+    If a child already exists, it will be overwritten.
     Press <enter> to proceed, Ctrl-C to abort.
 
     Reading /Users/michael/tmp/test.json... (may take a minute)
