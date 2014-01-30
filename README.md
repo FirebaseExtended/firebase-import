@@ -1,13 +1,14 @@
-firebase-import is a helper utility to import large JSON files into [Firebase](https://www.firebase.com/).  
-It breaks the JSON into smaller chunks and then stores those chunks individually through the Firebase API.
+# Firebase-Import
+Firebase-import is a helper utility for importing large JSON files into [Firebase](https://www.firebase.com/). It 
+breaks the JSON into smaller chunks and uploads them individually through the Firebase API.
 
 ## Installing
 
-Install the firebase-import module globally or install it locally and add it to your path:
+Install the firebase-import module globally:
 
     $ npm install -g firebase-import
 
-or
+or install it locally and add it to your path:
 
     $ npm install firebase-import
     $ export PATH=$PATH:`npm bin`
