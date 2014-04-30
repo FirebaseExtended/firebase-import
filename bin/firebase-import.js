@@ -30,7 +30,7 @@ var argv = require('optimist')
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
-  .describe('auth', 'Auth token to authenticate with.')
+  .describe('auth', 'Specify an auth token to use (e.g. your Firebase Secret).')
   .alias('a', 'auth')
 
   .argv;
