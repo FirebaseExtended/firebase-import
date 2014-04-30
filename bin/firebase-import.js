@@ -30,19 +30,40 @@ var argv = require('optimist')
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
+  .describe('auth', 'Auth token to authenticate with.')
+  .alias('a', 'auth')
+
   .argv;
 
 function main() {
   var ref = new Firebase(argv.firebase_url);
+
   var connFailTimeout = setTimeout(function() {
     console.log('Failed to connect to Firebase.');
     process.exit();
   }, 10000);
+
+  function ready() {
+    clearTimeout(connFailTimeout);
+    promptToContinue(ref, function() { start(ref); });
+  }
+
   var connFunc = ref.child('.info/connected').on('value', function(s) {
     if(s.val() === true) {
       ref.child('.info/connected').off('value', connFunc);
-      clearTimeout(connFailTimeout);
-      promptToContinue(ref, function() { start(ref); });
+
+      if (argv.auth) {
+        ref.auth(argv.auth, function(error) {
+          if (error) {
+            console.log('Failed to authenticate to Firebase using token:', argv.auth);
+            process.exit();
+          } else {
+            ready();
+          }
+        });
+      } else {
+        ready();
+      }
     }
   });
 }

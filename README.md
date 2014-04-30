@@ -23,6 +23,7 @@ or install it locally and add it to your path:
       --json, -j          The JSON file to import.                                            [required]
       --merge, -m         Write the top-level children without overwriting the whole parent.  [boolean]
       --force             Don't prompt before overwriting data.                               [boolean]
+      --auth, -a          Specify an auth token to use (e.g. your Firebase Secret).
 
 ## Example
 
