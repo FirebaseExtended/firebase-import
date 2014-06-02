@@ -3,8 +3,8 @@
   "description": "npm config for Firebase Import",
   "version": "1.1.2",
   "dependencies": {
+    "firebase": "~1.0.15",
     "optimist": "~0.5.2",
-    "firebase": "~0.5.4",
     "progress": "~0.1.0"
   },
   "devDependencies": {},
@@ -18,5 +18,7 @@
   ],
   "author": "Firebase",
   "license": "BSD",
-  "bin": { "firebase-import": "./bin/firebase-import.js" }
+  "bin": {
+    "firebase-import": "./bin/firebase-import.js"
+  }
 }

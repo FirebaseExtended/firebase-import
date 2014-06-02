@@ -16,7 +16,7 @@ var argv = require('optimist')
   .usage('Usage: $0')
 
   .demand('firebase_url')
-  .describe('firebase_url', 'Firebase URL (e.g. https://test.firebaseio.com/).')
+  .describe('firebase_url', 'Firebase URL (e.g. https://test.firebaseio.com/dest/path).')
   .alias('f', 'firebase_url')
 
   .demand('json')

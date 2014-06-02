@@ -19,7 +19,7 @@ or install it locally and add it to your path:
     Usage: firebase-import
 
     Options:
-      --firebase_url, -f  Firebase URL (e.g. https://test.firebaseio.com/).                   [required]
+      --firebase_url, -f  Firebase URL (e.g. https://test.firebaseio.com/dest/path).          [required]
       --json, -j          The JSON file to import.                                            [required]
       --merge, -m         Write the top-level children without overwriting the whole parent.  [boolean]
       --force             Don't prompt before overwriting data.                               [boolean]
