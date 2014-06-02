@@ -48,9 +48,9 @@ function main() {
     promptToContinue(ref, function() { start(ref); });
   }
 
-  var connFunc = ref.child('.info/connected').on('value', function(s) {
+  var connFunc = ref.root().child('.info/connected').on('value', function(s) {
     if(s.val() === true) {
-      ref.child('.info/connected').off('value', connFunc);
+      ref.root().child('.info/connected').off('value', connFunc);
 
       if (argv.auth) {
         ref.auth(argv.auth, function(error) {
