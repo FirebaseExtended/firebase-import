@@ -10,19 +10,19 @@ var Firebase = require('firebase'),
 var CHUNK_SIZE = 1024*1024;
 
 // Keep ~50 writes outstanding at a time (this increases throughput, so we're not delayed by server round-trips).
-var OUTSTANDING_WRITE_COUNT = 50; 
+var OUTSTANDING_WRITE_COUNT = 50;
 
 var argv = require('optimist')
   .usage('Usage: $0')
 
   .demand('firebase_url')
-  .describe('firebase_url', 'Firebase URL (e.g. https://test.firebaseio.com/dest/path).')
+  .describe('firebase_url', 'Firebase database URL (e.g. https://test.firebaseio.com/dest/path).')
   .alias('f', 'firebase_url')
 
   .demand('json')
   .describe('json', 'The JSON file to import.')
   .alias('j', 'json')
-  
+
   .boolean('merge')
   .describe('merge', 'Write the top-level children without overwriting the whole parent.')
   .alias('m', 'merge')
@@ -30,7 +30,7 @@ var argv = require('optimist')
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
-  .describe('auth', 'Specify an auth token to use (e.g. your Firebase Secret).')
+  .describe('auth', 'Specify an auth token to use (or your Firebase Secret).')
   .alias('a', 'auth')
 
   .argv;
@@ -94,7 +94,7 @@ function start(ref) {
     // Need to split into chunks at the top level to ensure we don't overwrite the parent.
     splitTopLevel = true;
   }
-  
+
   console.log('Preparing JSON for import... (may take a minute)');
   var chunks = createChunks(ref, json, splitTopLevel);
 
@@ -138,7 +138,7 @@ function chunkInternal(ref, json, forceSplit) {
     priority = json['.priority'];
     size += json['.priority'].toString().length;
   }
-  
+
   var value = json;
   if (jsonIsObject && ('.value' in json)) {
     size += 9; // ".value":
@@ -188,13 +188,13 @@ function chunkInternal(ref, json, forceSplit) {
 function ChunkUploader(chunks) {
   this.next = 0;
   this.chunks = chunks;
-  this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)', 
+  this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)',
     { width: 50, total: chunks.length, incomplete: ' ' });
 }
 
 ChunkUploader.prototype.go = function(onComplete) {
   this.onComplete = onComplete;
-  
+
   for(var i = 0; i < OUTSTANDING_WRITE_COUNT && i < this.chunks.length; i++) {
     this.uploadNext();
   }
@@ -204,17 +204,17 @@ ChunkUploader.prototype.uploadNext = function() {
   var chunkNum = this.next, chunk = this.chunks[chunkNum];
   assert(chunkNum < this.chunks.length);
   this.next++;
- 
+
   var self = this;
   var onComplete = function(error) {
-    if (error) { 
+    if (error) {
       console.log('Error uploading to ' + self.chunks[i].ref.toString() + ': ' + util.inspect(json));
       console.error(error);
-      throw error; 
+      throw error;
     }
-    
+
     self.bar.tick();
-    
+
     if (chunkNum === self.chunks.length - 1) {
       self.onComplete();
     } else {
