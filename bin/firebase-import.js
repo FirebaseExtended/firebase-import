@@ -27,6 +27,10 @@ var argv = require('optimist')
   .describe('merge', 'Write the top-level children without overwriting the whole parent.')
   .alias('m', 'merge')
 
+  .boolean('static-output')
+  .describe('static-output', 'Suppress progress bar for compatibility reasons.')
+  .alias('s', 'static-output')
+
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
@@ -188,8 +192,11 @@ function chunkInternal(ref, json, forceSplit) {
 function ChunkUploader(chunks) {
   this.next = 0;
   this.chunks = chunks;
-  this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)',
-    { width: 50, total: chunks.length, incomplete: ' ' });
+  if (argv['static-output']) {
+      console.log('Importing... (may take a while)');
+  } else {
+      this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)', { width: 50, total: chunks.length, incomplete: ' ' });
+  }
 }
 
 ChunkUploader.prototype.go = function(onComplete) {
@@ -213,7 +220,9 @@ ChunkUploader.prototype.uploadNext = function() {
       throw error;
     }
 
-    self.bar.tick();
+    if (!argv['static-output']) {
+        self.bar.tick();
+    }
 
     if (chunkNum === self.chunks.length - 1) {
       self.onComplete();
