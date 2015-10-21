@@ -189,9 +189,9 @@ function ChunkUploader(chunks) {
   this.next = 0;
   this.chunks = chunks;
   if (process.stdout.isTTY) {
-      console.log('Importing... (may take a while)');
-  } else {
       this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)', { width: 50, total: chunks.length, incomplete: ' ' });
+  } else {
+      console.log('Importing... (may take a while)');
   }
 }
 
