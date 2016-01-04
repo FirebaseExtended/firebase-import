@@ -188,8 +188,11 @@ function chunkInternal(ref, json, forceSplit) {
 function ChunkUploader(chunks) {
   this.next = 0;
   this.chunks = chunks;
-  this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)',
-    { width: 50, total: chunks.length, incomplete: ' ' });
+  if (process.stdout.isTTY) {
+      this.bar = new ProgressBar('Importing [:bar] :percent (:current/:total)', { width: 50, total: chunks.length, incomplete: ' ' });
+  } else {
+      console.log('Importing... (may take a while)');
+  }
 }
 
 ChunkUploader.prototype.go = function(onComplete) {
@@ -213,7 +216,9 @@ ChunkUploader.prototype.uploadNext = function() {
       throw error;
     }
 
-    self.bar.tick();
+    if (process.stdout.isTTY && self.bar) {
+        self.bar.tick();
+    }
 
     if (chunkNum === self.chunks.length - 1) {
       self.onComplete();
