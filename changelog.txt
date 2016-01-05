@@ -1,1 +1,1 @@
-fixed - Disable progress bar when piping the output.
+fixed - Disabled progress bar when piping the output.
