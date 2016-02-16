@@ -7,7 +7,9 @@
     "optimist": "~0.5.2",
     "progress": "~0.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "copyfiles": "^0.2.1"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/firebase/firebase-import.git"
@@ -20,5 +22,8 @@
   "license": "BSD",
   "bin": {
     "firebase-import": "./bin/firebase-import.js"
+  },
+  "scripts": {
+    "build": "copyfiles -f src/firebase-import.js bin"
   }
 }
