@@ -18,6 +18,12 @@
     "firebase",
     "import"
   ],
+  "files": [
+    "bin/**",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "author": "Firebase",
   "license": "BSD",
   "bin": {
