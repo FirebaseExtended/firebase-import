@@ -41,7 +41,7 @@ or install it locally and add it to your path:
 Or an example of merging the contents of test.json with what's already in Firebase:
 
     $ firebase-import --firebase_url https://test.firebaseio-demo.com --json test.json --merge
-    Each top-level child in test.json will be written under https://test.firebaseio-demo.com.  
+    Each top-level child in test.json will be written under https://test.firebaseio-demo.com.
     If a child already exists, it will be overwritten.
     Press <enter> to proceed, Ctrl-C to abort.
 
@@ -49,6 +49,3 @@ Or an example of merging the contents of test.json with what's already in Fireba
     Preparing JSON for import... (may take a minute)
     Importing [=================================================] 100% (9431/9431)
     Import completed.
-
-## LICENSE
-[MIT](http://firebase.mit-license.org/).

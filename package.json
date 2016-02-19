@@ -3,11 +3,13 @@
   "description": "npm config for Firebase Import",
   "version": "0.0.0",
   "dependencies": {
-    "firebase": "~1.0.15",
+    "firebase": "^2.4.1",
     "optimist": "~0.5.2",
     "progress": "~0.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "copyfiles": "^0.2.1"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/firebase/firebase-import.git"
@@ -16,9 +18,18 @@
     "firebase",
     "import"
   ],
+  "files": [
+    "bin/**",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "author": "Firebase",
-  "license": "BSD",
+  "license": "MIT",
   "bin": {
     "firebase-import": "./bin/firebase-import.js"
+  },
+  "scripts": {
+    "build": "copyfiles -f src/firebase-import.js bin"
   }
 }
