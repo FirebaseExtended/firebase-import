@@ -1,1 +1,1 @@
-changed - Updated Firebase dependency.
+changed - Updated for Firebase 3.x support
