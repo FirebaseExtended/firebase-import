@@ -3,12 +3,12 @@
   "description": "npm config for Firebase Import",
   "version": "0.0.0",
   "dependencies": {
-    "firebase": "^2.4.1",
-    "optimist": "~0.5.2",
-    "progress": "~0.1.0"
+    "firebase": "^3.4.0",
+    "optimist": "^0.6.1",
+    "progress": "^1.1.8"
   },
   "devDependencies": {
-    "copyfiles": "^0.2.1"
+    "copyfiles": "^1.0.0"
   },
   "repository": {
     "type": "git",

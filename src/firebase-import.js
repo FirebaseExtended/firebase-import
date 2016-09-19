@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var Firebase = require('firebase'),
+var firebase = require('firebase'),
     optimist = require('optimist'),
     ProgressBar = require('progress'),
     assert = require('assert'),
@@ -15,9 +15,13 @@ var OUTSTANDING_WRITE_COUNT = 50;
 var argv = require('optimist')
   .usage('Usage: $0')
 
-  .demand('firebase_url')
-  .describe('firebase_url', 'Firebase database URL (e.g. https://test.firebaseio.com/dest/path).')
-  .alias('f', 'firebase_url')
+  .demand('database_url')
+  .describe('database_url', 'Firebase database URL (e.g. https://databaseName.firebaseio.com).')
+  .alias('d', 'database_url')
+
+  .demand('path')
+  .describe('path', 'database path (e.g. /products).')
+  .alias('p', 'path')
 
   .demand('json')
   .describe('json', 'The JSON file to import.')
@@ -30,13 +34,18 @@ var argv = require('optimist')
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
-  .describe('auth', 'Specify an auth token to use (or your Firebase Secret).')
-  .alias('a', 'auth')
+  .describe('service_account', 'path to a JSON file with your service account credentials')
+  .alias('s', 'service_account')
 
   .argv;
 
 function main() {
-  var ref = new Firebase(argv.firebase_url);
+  firebase.initializeApp({
+    databaseURL: argv.database_url,
+    serviceAccount: argv.service_account,
+  });
+  var db = firebase.database();
+  var ref = db.ref(argv.path);
 
   var connFailTimeout = setTimeout(function() {
     console.log('Failed to connect to Firebase.');
@@ -48,22 +57,10 @@ function main() {
     promptToContinue(ref, function() { start(ref); });
   }
 
-  var connFunc = ref.root().child('.info/connected').on('value', function(s) {
+  var connFunc = db.ref('.info/connected').on('value', function(s) {
     if(s.val() === true) {
-      ref.root().child('.info/connected').off('value', connFunc);
-
-      if (argv.auth) {
-        ref.auth(argv.auth, function(error) {
-          if (error) {
-            console.log('Failed to authenticate to Firebase using token:', argv.auth);
-            process.exit();
-          } else {
-            ready();
-          }
-        });
-      } else {
-        ready();
-      }
+      db.ref('.info/connected').off('value', connFunc);
+      ready();
     }
   });
 }
