@@ -7,9 +7,6 @@
     "optimist": "^0.6.1",
     "progress": "^1.1.8"
   },
-  "devDependencies": {
-    "copyfiles": "^1.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/firebase/firebase-import.git"
@@ -19,7 +16,7 @@
     "import"
   ],
   "files": [
-    "bin/**",
+    "src/**",
     "LICENSE",
     "README.md",
     "package.json"
@@ -27,9 +24,6 @@
   "author": "Firebase",
   "license": "MIT",
   "bin": {
-    "firebase-import": "./bin/firebase-import.js"
-  },
-  "scripts": {
-    "build": "copyfiles -f src/firebase-import.js bin"
+    "firebase-import": "./src/firebase-import.js"
   }
 }
