@@ -1,1 +1,3 @@
-changed - Updated for Firebase 3.x support
+feature - Updated for Firebase 3.x support. 
+changed - The --firebase_url option was replaced with --database_url and --path.
+changed - Instead of using --auth you must use --service_account and provide a service account.
