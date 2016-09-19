@@ -20,7 +20,7 @@ var argv = require('optimist')
   .alias('d', 'database_url')
 
   .demand('path')
-  .describe('path', 'database path (e.g. /products).')
+  .describe('path', 'Database path (e.g. /products).')
   .alias('p', 'path')
 
   .demand('json')
@@ -34,7 +34,7 @@ var argv = require('optimist')
   .boolean('force')
   .describe('force', 'Don\'t prompt before overwriting data.')
 
-  .describe('service_account', 'path to a JSON file with your service account credentials')
+  .describe('service_account', 'Path to a JSON file with your service account credentials.')
   .alias('s', 'service_account')
 
   .argv;

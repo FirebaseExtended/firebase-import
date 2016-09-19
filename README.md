@@ -21,16 +21,17 @@ or install it locally and add it to your path:
     Usage: firebase-import
 
     Options:
-      --firebase_url, -f  Firebase database URL (e.g. https://test.firebaseio.com/dest/path).          [required]
-      --json, -j          The JSON file to import.                                            [required]
-      --merge, -m         Write the top-level children without overwriting the whole parent.  [boolean]
-      --force             Don't prompt before overwriting data.                               [boolean]
-      --auth, -a          Specify an auth token to use (e.g. your Firebase Secret).
+      --database_url     Firebase database URL (e.g. https://databaseName.firebaseio.com).   [required]
+      --path             Database path (e.g. /products).                                     [required]
+      --json             The JSON file to import.                                            [required]
+      --merge            Write the top-level children without overwriting the whole parent.
+      --force            Don't prompt before overwriting data.
+      --service_account  Path to a JSON file with your service account credentials.
 
 ## Example
 
-    $ firebase-import --firebase_url https://test.firebaseio-demo.com --json test.json
-    All data at https://test.firebaseio-demo.com will be overwritten.
+    $ firebase-import --database_url https://test.firebaseio-demo.com --path / --json test.json
+    All data at https://test.firebaseio-demo.com/ will be overwritten.
     Press <enter> to proceed, Ctrl-C to abort.
 
     Reading /Users/michael/tmp/test.json... (may take a minute)
@@ -40,8 +41,8 @@ or install it locally and add it to your path:
 
 Or an example of merging the contents of test.json with what's already in Firebase:
 
-    $ firebase-import --firebase_url https://test.firebaseio-demo.com --json test.json --merge
-    Each top-level child in test.json will be written under https://test.firebaseio-demo.com.
+    $ firebase-import --database_url https://test.firebaseio-demo.com --path / --json test.json --merge
+    Each top-level child in test.json will be written under https://test.firebaseio-demo.com/.
     If a child already exists, it will be overwritten.
     Press <enter> to proceed, Ctrl-C to abort.
 
