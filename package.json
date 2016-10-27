@@ -3,6 +3,7 @@
   "description": "npm config for Firebase Import",
   "version": "0.0.0",
   "dependencies": {
+    "JSONStream": "^1.2.1",
     "firebase": "^3.4.0",
     "optimist": "^0.6.1",
     "progress": "^1.1.8"
