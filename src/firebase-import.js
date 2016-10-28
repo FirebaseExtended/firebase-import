@@ -3,7 +3,9 @@ var firebase = require('firebase'),
     optimist = require('optimist'),
     ProgressBar = require('progress'),
     assert = require('assert'),
-    path = require('path');
+    path = require('path'),
+    fs = require('fs'),
+    JSONStream = require('JSONStream'),
     util = require('util');
 
 // We try to write data in ~1MB chunks (in reality this often ends up being much smaller, due to the JSON structure).
@@ -80,29 +82,79 @@ function promptToContinue(ref, next) {
   }
 }
 
+function readFirstNonWhitespaceChar(file, callback) {
+  var firstChar;
+  var rs = fs.createReadStream(file);
+  rs.on('data', function(chunk) {
+      var s = chunk.toString().trim();
+      if (s !== "") {
+        rs.close();
+      }
+      firstChar = s[0];
+    })
+    .on('error', callback)
+    .on('close', function() {
+      return callback(null, firstChar);
+    });
+}
+
+function getJsonFromFile(file, callback) {
+  readFirstNonWhitespaceChar(file, function(err, firstChar) {
+    var json;
+    if (firstChar === "[" || firstChar === "{") {
+      var jsonStream;
+      var onFunc;
+      if (firstChar === "[") {
+        json = [];
+        jsonStream = JSONStream.parse("*");
+        onFunc = function(r) {
+          json.push(r);
+        };
+      } else {
+        json = {};
+        jsonStream = JSONStream.parse("$*");
+        onFunc = function(r) {
+          json[r.key] = r.value;
+        };
+      }
+      fs.createReadStream(file)
+        .pipe(jsonStream)
+        .on('data', onFunc)
+        .on('error', callback)
+        .on('close', function() {
+          return callback(null, json);
+        });
+    } else {
+      json = require(file);
+      return callback(null, json);
+    }
+  });
+}
+
 function start(ref) {
   var file = path.resolve(argv.json);
   console.log('Reading ' + file + '... (may take a minute)');
-  var json = require(file);
 
-  var clearFirst = true, splitTopLevel = false;
-  if (argv.merge) {
-    clearFirst = false;
-    // Need to split into chunks at the top level to ensure we don't overwrite the parent.
-    splitTopLevel = true;
-  }
+  getJsonFromFile(file, function(err, json) {
+    var clearFirst = true, splitTopLevel = false;
+    if (argv.merge) {
+      clearFirst = false;
+      // Need to split into chunks at the top level to ensure we don't overwrite the parent.
+      splitTopLevel = true;
+    }
 
-  console.log('Preparing JSON for import... (may take a minute)');
-  var chunks = createChunks(ref, json, splitTopLevel);
+    console.log('Preparing JSON for import... (may take a minute)');
+    var chunks = createChunks(ref, json, splitTopLevel);
 
-  if (clearFirst) {
-    ref.remove(function(error) {
-      if (error) throw(error);
+    if (clearFirst) {
+      ref.remove(function(error) {
+        if (error) throw(error);
+        uploadChunks(chunks);
+      });
+    } else {
       uploadChunks(chunks);
-    });
-  } else {
-    uploadChunks(chunks);
-  }
+    }
+  });
 }
 
 function uploadChunks(chunks) {
