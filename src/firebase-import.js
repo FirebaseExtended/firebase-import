@@ -4,8 +4,8 @@ var firebase = require('firebase'),
     ProgressBar = require('progress'),
     assert = require('assert'),
     path = require('path'),
-    fs = require('fs')
-    JSONStream = require('JSONStream')
+    fs = require('fs'),
+    JSONStream = require('JSONStream'),
     util = require('util');
 
 // We try to write data in ~1MB chunks (in reality this often ends up being much smaller, due to the JSON structure).
@@ -82,30 +82,35 @@ function promptToContinue(ref, next) {
   }
 }
 
-function getJsonFromFile(file, callback) {
+function readFirstNonWhitespaceChar(file, callback) {
   var firstChar;
   var rs = fs.createReadStream(file);
   rs.on('data', function(chunk) {
-    var s = chunk.toString().trim();
-    if (s !== "") {
-      rs.close();
-    }
-    firstChar = s[0];
-  })
-  .on('close', function() {
+      var s = chunk.toString().trim();
+      if (s !== "") {
+        rs.close();
+      }
+      firstChar = s[0];
+    })
+    .on('error', callback)
+    .on('close', function() {
+      return callback(null, firstChar);
+    });
+}
+
+function getJsonFromFile(file, callback) {
+  readFirstNonWhitespaceChar(file, function(err, firstChar) {
+    var json;
     if (firstChar === "[" || firstChar === "{") {
       var jsonStream;
       var onFunc;
-      var json;
       if (firstChar === "[") {
-        console.log("Reading json as an array...");
         json = [];
         jsonStream = JSONStream.parse("*");
         onFunc = function(r) {
           json.push(r);
         };
       } else {
-        console.log("Reading json as an object...");
         json = {};
         jsonStream = JSONStream.parse("$*");
         onFunc = function(r) {
@@ -113,14 +118,14 @@ function getJsonFromFile(file, callback) {
         };
       }
       fs.createReadStream(file)
-      .pipe(jsonStream)
-      .on('data', onFunc)
-      .on('error', callback)
-      .on('close', function() {
-        return callback(null, json);
-      });
+        .pipe(jsonStream)
+        .on('data', onFunc)
+        .on('error', callback)
+        .on('close', function() {
+          return callback(null, json);
+        });
     } else {
-      var json = require(file);
+      json = require(file);
       return callback(null, json);
     }
   });
