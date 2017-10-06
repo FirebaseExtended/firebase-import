@@ -1,6 +1,7 @@
 # Firebase-Import
-Firebase-import is a helper utility for importing large JSON files into your [Firebase](https://www.firebase.com/) database. It
-breaks the JSON into smaller chunks and uploads them individually through the Firebase API.
+Firebase-import is a helper utility for importing large JSON files into your 
+[Firebase Realtime Database](https://firebase.google.com/docs/database/). It breaks the JSON into smaller
+chunks and uploads them individually through the Firebase API.
 
 To import files bigger than 250MB, use [Firebase Streaming Import](https://github.com/firebase/firebase-streaming-import).
 
