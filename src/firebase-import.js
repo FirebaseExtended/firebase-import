@@ -7,6 +7,7 @@ var firebase = require('firebase'),
     fs = require('fs'),
     JSONStream = require('JSONStream'),
     util = require('util');
+    admin = require("firebase-admin");
 
 // We try to write data in ~1MB chunks (in reality this often ends up being much smaller, due to the JSON structure).
 var CHUNK_SIZE = 1024*1024;
@@ -42,11 +43,12 @@ var argv = require('optimist')
   .argv;
 
 function main() {
-  firebase.initializeApp({
-    databaseURL: argv.database_url,
-    serviceAccount: argv.service_account,
+  admin.initializeApp({
+    credential: admin.credential.cert(argv.service_account),
+    databaseURL: argv.database_url
   });
-  var db = firebase.database();
+
+  var db = admin.database();
   var ref = db.ref(argv.path);
 
   var connFailTimeout = setTimeout(function() {
