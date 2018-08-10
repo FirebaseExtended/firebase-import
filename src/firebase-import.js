@@ -43,7 +43,6 @@ var argv = require('optimist')
   .argv;
 
 function main() {
-console.log(argv.service_account)
   admin.initializeApp({
     credential: admin.credential.cert(argv.service_account),
     databaseURL: argv.database_url
