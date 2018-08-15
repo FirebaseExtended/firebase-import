@@ -43,7 +43,7 @@ See Example below
 
 ## Example
 
-    $ firebase-import --database_url https://test.firebaseio-demo.com --path / --json test.json --service_account /path/to/your/service_account.json
+    $ firebase-import --database_url https://test.firebaseio-demo.com --path // --json test.json --service_account /path/to/your/service_account.json
     All data at https://test.firebaseio-demo.com/ will be overwritten.
     Press <enter> to proceed, Ctrl-C to abort.
 
@@ -54,7 +54,7 @@ See Example below
 
 Or an example of merging the contents of test.json with what's already in Firebase:
 
-    $ firebase-import --database_url https://test.firebaseio-demo.com --path / --json test.json --merge --service_account /path/to/your/service_account.json
+    $ firebase-import --database_url https://test.firebaseio-demo.com --path // --json test.json --merge --service_account /path/to/your/service_account.json
     Each top-level child in test.json will be written under https://test.firebaseio-demo.com/.
     If a child already exists, it will be overwritten.
     Press <enter> to proceed, Ctrl-C to abort.
