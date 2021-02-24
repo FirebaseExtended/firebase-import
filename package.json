@@ -1,7 +1,7 @@
 {
   "name": "firebase-import",
   "description": "npm config for Firebase Import",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "dependencies": {
     "JSONStream": "^1.2.1",
     "firebase": "^3.4.0",
